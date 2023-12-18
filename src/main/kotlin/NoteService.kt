@@ -21,12 +21,10 @@ data class NoteСomment(
 object NotesService {
     var notes = mutableListOf<Note>()
     var comments = mutableListOf<NoteСomment>()
-    //var deletedComments = mutableListOf<NoteСomment>()
 
     fun clear() {
         notes = mutableListOf()
         comments = mutableListOf()
-        //deletedComments = mutableListOf()
     }
 
     fun addNote(note: Note): Note {
@@ -90,8 +88,8 @@ object NotesService {
 
     fun removeComment(noteId: Int, commentId: Int): NoteСomment {
         for ((index, commen) in comments.withIndex()) {
-            if (commen.noteId == noteId && commen.commentId == commentId && !commen.isDeleted ) {
-                comments[index] = commen.copy(commentId = commen.commentId,isDeleted = true)
+            if (commen.noteId == noteId && commen.commentId == commentId && !commen.isDeleted) {
+                comments[index] = commen.copy(commentId = commen.commentId, isDeleted = true)
             }
         }
         return comments.last()
@@ -99,7 +97,7 @@ object NotesService {
 
     fun printComment(noteId: Int) {
         for ((index, commen) in comments.withIndex()) {
-            if (commen.noteId == noteId  && !commen.isDeleted) {
+            if (commen.noteId == noteId && !commen.isDeleted) {
                 println("Comments for noteID $noteId -  " + commen.commentId + " * " + commen.ownerId + " * " + commen.message)
             }
         }
