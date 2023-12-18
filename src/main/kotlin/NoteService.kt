@@ -1,3 +1,5 @@
+import kotlin.collections.mutableListOf as mutableListOf
+
 class NoteNotFoundException(message: String) : RuntimeException(message)
 class CommentNotFoundException(message: String) : RuntimeException(message)
 
@@ -118,29 +120,31 @@ object NotesService {
         throw CommentNotFoundException("Not found Comment ID $commentId")
     }
 
-    fun getNote(ownerId: Int) {
+    fun getNote(ownerId: Int): String{
         for (note in notes) {
-            if (ownerId == note.ownerId && !note.isDeleted) {
-                println(note.title)
-            }
+            if (ownerId == note.ownerId && !note.isDeleted)
+                return note.title
         }
+        throw NoteNotFoundException("Not found Note")
     }
 
-    fun getComments(id: Int) {
+    fun getComments(id: Int): String {
         for (comment in comments) {
             if (id == comment.commentId) {
-                println(comment.message)
+                return comment.message
             }
         }
+        throw CommentNotFoundException("Not found Comments")
     }
 
-    fun getById(id: Int) {
+    fun getById(id: Int): String {
         for (note in notes) {
             if (id == note.noteId) {
                 if (!note.isDeleted) {
-                    println("Note title: ${note.title}. Note text: ${note.text}")
+                    return("Note title: ${note.title}. Note text: ${note.text}")
                 }
             }
         }
+        throw CommentNotFoundException("Not found Note")
     }
 }
