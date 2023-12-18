@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test
 
 
 val notes = NotesService
-val noteOne = Note(2,"Title", "Text", 0, 0, false)
-val noteTwo = Note(3,"Title", "Text", 0, 0, false)
-val noteNew = Note(2,"NewTitle", "NewText", 0, 0, false)
+val noteOne = Note(2,"Title", "Text", 0, 0, false, 1)
+val noteTwo = Note(3,"Title", "Text", 0, 0, false, 1)
+val noteNew = Note(2,"NewTitle", "NewText", 0, 0, false, 1)
 val commentOne = NoteСomment(2,1,100,"NewComment",false)
 val commentTwo = NoteСomment(2,2,100,"NewComment2",false)
 val editedComment = NoteСomment(2,1,100,"EditedComment",false)
@@ -23,13 +23,13 @@ class NotesServiceTest {
     @Test
     fun addNote() {
         notes.addNote(noteOne)
-        assertEquals(Note(2, "Title", "Text", 0, 0, false), noteOne)
+        assertEquals(Note(2, "Title", "Text", 0, 0, false, 1), noteOne)
     }
 
     @Test
     fun editNote() {
         notes.addNote(noteOne)
-        assertEquals(notes.editNote(2, Note(2, "NewTitle", "NewText", 0, 0, false)), noteNew)
+        assertEquals(notes.editNote(2, Note(2, "NewTitle", "NewText", 0, 0, false, 1)), noteNew)
     }
 
     @Test

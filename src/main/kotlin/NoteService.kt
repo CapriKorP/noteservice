@@ -7,7 +7,8 @@ data class Note(
     val text: String,
     val privacy: Int = 0,
     val commentPrivacy: Int = 0,
-    var isDeleted: Boolean = false
+    var isDeleted: Boolean = false,
+    val ownerId: Int
 
 )
 
@@ -22,6 +23,7 @@ data class NoteСomment(
 object NotesService {
     var notes = mutableListOf<Note>()
     var comments = mutableListOf<NoteСomment>()
+    var count = 0
 
     fun clear() {
         notes = mutableListOf()
@@ -59,7 +61,7 @@ object NotesService {
         for ((index, n) in notes.withIndex()) {
             if (n.noteId == noteId && !n.isDeleted) {
                 notes[index] = n.copy(isDeleted = true)
-                notes = notes.filter { it.isDeleted }.toMutableList()
+                notes = notes.filter { !it.isDeleted }.toMutableList()
                 return true
             }
         }
@@ -114,5 +116,31 @@ object NotesService {
             }
         }
         throw CommentNotFoundException("Not found Comment ID $commentId")
+    }
+
+    fun getNote(ownerId: Int) {
+        for (note in notes) {
+            if (ownerId == note.ownerId && !note.isDeleted) {
+                println(note.title)
+            }
+        }
+    }
+
+    fun getComments(id: Int) {
+        for (comment in comments) {
+            if (id == comment.commentId) {
+                println(comment.message)
+            }
+        }
+    }
+
+    fun getById(id: Int) {
+        for (note in notes) {
+            if (id == note.noteId) {
+                if (!note.isDeleted) {
+                    println("Note title: ${note.title}. Note text: ${note.text}")
+                }
+            }
+        }
     }
 }
