@@ -10,13 +10,13 @@ data class Note(
     val privacy: Int = 0,
     val commentPrivacy: Int = 0,
     var isDeleted: Boolean = false,
-    val ownerId: Int
-
+    val ownerId: Int,
+    var comments: MutableList<NoteСomment> = mutableListOf()
 )
 
 data class NoteСomment(
-    val noteId: Int,
-    val commentId: Int,
+    val comId: Int,
+    var commentId: Int,
     val ownerId: Int,
     val message: String,
     var isDeleted: Boolean = false
@@ -94,7 +94,7 @@ object NotesService {
 
     fun removeComment(noteId: Int, commentId: Int): Boolean {
         for ((index, commen) in comments.withIndex()) {
-            if (commen.noteId == noteId && commen.commentId == commentId && !commen.isDeleted) {
+            if (commen.comId == noteId && commen.commentId == commentId && !commen.isDeleted) {
                 comments[index] = commen.copy(commentId = commen.commentId, isDeleted = true)
                 return true
             }
@@ -104,7 +104,7 @@ object NotesService {
 
     fun printComment(noteId: Int) {
         for ((index, commen) in comments.withIndex()) {
-            if (commen.noteId == noteId && !commen.isDeleted) {
+            if (commen.comId == noteId && !commen.isDeleted) {
                 println("Comments for noteID $noteId -  " + commen.commentId + " * " + commen.ownerId + " * " + commen.message)
             }
         }
@@ -112,7 +112,7 @@ object NotesService {
 
     fun restoreComment(noteId: Int, commentId: Int): Boolean {
         for ((index, commRestore) in comments.withIndex()) {
-            if (commRestore.noteId == noteId && commRestore.commentId == commentId && commRestore.isDeleted) {
+            if (commRestore.comId == noteId && commRestore.commentId == commentId && commRestore.isDeleted) {
                 comments[index] = commRestore.copy(isDeleted = false)
                 return true
             }
@@ -120,31 +120,38 @@ object NotesService {
         throw CommentNotFoundException("Not found Comment ID $commentId")
     }
 
-    fun getNote(ownerId: Int): String{
+    fun getNote(ownerId: Int): List<Note> {
         for (note in notes) {
-            if (ownerId == note.ownerId && !note.isDeleted)
-                return note.title
+            if (ownerId == note.ownerId && !note.isDeleted) {
+                return notes
+            }
         }
         throw NoteNotFoundException("Not found Note")
     }
 
-    fun getComments(id: Int): String {
-        for (comment in comments) {
-            if (id == comment.commentId) {
-                return comment.message
+    fun getComments(id: Int): List<NoteСomment> {
+        val comments = mutableListOf<NoteСomment>()
+        for (note in notes) {
+            if (note.noteId == id) {
+                for (comment in note.comments) {
+                    if (!comment.isDeleted) {
+                        comments.add(comment)
+                    }
+                }
+                return comments
             }
         }
         throw CommentNotFoundException("Not found Comments")
-    }
+}
 
-    fun getById(id: Int): String {
-        for (note in notes) {
-            if (id == note.noteId) {
-                if (!note.isDeleted) {
-                    return("Note title: ${note.title}. Note text: ${note.text}")
-                }
-            }
+
+fun getById(id: Int): Note {
+    for (note in notes) {
+        if (id == note.noteId && !note.isDeleted) {
+            return note
         }
-        throw CommentNotFoundException("Not found Note")
     }
+    throw NoteNotFoundException("Not found Note")
+}
+
 }
