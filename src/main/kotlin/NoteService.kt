@@ -1,4 +1,5 @@
 class NoteNotFoundException(message: String) : RuntimeException(message)
+class CommentNotFoundException(message: String) : RuntimeException(message)
 
 data class Note(
     var noteId: Int,
@@ -54,14 +55,15 @@ object NotesService {
         println()
     }
 
-    fun removeNote(noteId: Int): Note {
+    fun removeNote(noteId: Int): Boolean {
         for ((index, n) in notes.withIndex()) {
             if (n.noteId == noteId && !n.isDeleted) {
                 notes[index] = n.copy(isDeleted = true)
                 notes = notes.filter { it.isDeleted }.toMutableList()
+                return true
             }
         }
-        return notes.last()
+        throw NoteNotFoundException("Not found Note ID $noteId")
     }
 
     fun createComment(noteId: Int, noteСomment: NoteСomment): NoteСomment {
@@ -83,16 +85,17 @@ object NotesService {
             }
             return comments[index]
         }
-        throw NoteNotFoundException("Not found Note ID $commentId")
+        throw CommentNotFoundException("Not found Comment ID $commentId")
     }
 
-    fun removeComment(noteId: Int, commentId: Int): NoteСomment {
+    fun removeComment(noteId: Int, commentId: Int): Boolean {
         for ((index, commen) in comments.withIndex()) {
             if (commen.noteId == noteId && commen.commentId == commentId && !commen.isDeleted) {
                 comments[index] = commen.copy(commentId = commen.commentId, isDeleted = true)
+                return true
             }
         }
-        return comments.last()
+        throw CommentNotFoundException("Not found Comment ID $commentId")
     }
 
     fun printComment(noteId: Int) {
@@ -103,13 +106,13 @@ object NotesService {
         }
     }
 
-    fun restoreComment(noteId: Int, commentId: Int): NoteСomment {
+    fun restoreComment(noteId: Int, commentId: Int): Boolean {
         for ((index, commRestore) in comments.withIndex()) {
             if (commRestore.noteId == noteId && commRestore.commentId == commentId && commRestore.isDeleted) {
                 comments[index] = commRestore.copy(isDeleted = false)
-                comments = comments.filter { !it.isDeleted }.toMutableList()
+                return true
             }
         }
-        return comments.last()
+        throw CommentNotFoundException("Not found Comment ID $commentId")
     }
 }

@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 
@@ -10,11 +11,10 @@ val commentOne = NoteСomment(2,1,100,"NewComment",false)
 val commentTwo = NoteСomment(2,2,100,"NewComment2",false)
 val editedComment = NoteСomment(2,1,100,"EditedComment",false)
 
-
 class NotesServiceTest {
 
     @before
-    fun clearBeforeTest (){
+    fun clearBeforeTest() {
         NotesService.clear()
     }
 
@@ -23,16 +23,17 @@ class NotesServiceTest {
     @Test
     fun addNote() {
         notes.addNote(noteOne)
-        assertEquals(Note(2,"Title", "Text", 0, 0, false), noteOne)
+        assertEquals(Note(2, "Title", "Text", 0, 0, false), noteOne)
     }
 
     @Test
-    fun editNote(){
+    fun editNote() {
         notes.addNote(noteOne)
-        assertEquals(notes.editNote(2, Note(2,"NewTitle", "NewText", 0, 0, false)), noteNew)
+        assertEquals(notes.editNote(2, Note(2, "NewTitle", "NewText", 0, 0, false)), noteNew)
     }
+
     @Test
-    fun removeNote(){
+    fun removeNote() {
         clearBeforeTest()
         notes.addNote(noteOne)
         notes.addNote(noteTwo)
@@ -41,52 +42,49 @@ class NotesServiceTest {
 
         val actual = notes.notes.size
 
-        assertEquals(1,actual)
+        assertEquals(1, actual)
     }
 
     @Test
-    fun createComment(){
+    fun createComment() {
         notes.addNote(noteOne)
-        notes.createComment(2,commentOne)
-        val actual = notes.createComment(2,NoteСomment(2,1,100,"NewComment",false))
+        notes.createComment(2, commentOne)
+        val actual = notes.createComment(2, NoteСomment(2, 1, 100, "NewComment", false))
 
         assertEquals(commentOne, actual)
     }
 
     @Test
-    fun editComment(){
+    fun editComment() {
         notes.addNote(noteOne)
-        notes.createComment(2,commentOne)
-        val actual = notes.editComment(1, NoteСomment(2,1,100,"EditedComment",false))
+        notes.createComment(2, commentOne)
+        val actual = notes.editComment(1, NoteСomment(2, 1, 100, "EditedComment", false))
 
         assertEquals(editedComment, actual)
     }
 
     @Test
-    fun removeComment(){
+    fun removeComment() {
         clearBeforeTest()
         notes.addNote(noteOne)
-        notes.createComment(2,commentOne)
-        notes.removeComment(2,1)
+        notes.createComment(2, commentOne)
+        notes.removeComment(2, 1)
 
-        val expected = NoteСomment(2,1,100,"NewComment",true)
+        val expected = NoteСomment(2, 1, 100, "NewComment", true)
         val actual = notes.comments.last()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun restoreComment(){
+    fun restoreCommentTrue() {
         clearBeforeTest()
         notes.addNote(noteOne)
-        notes.createComment(2,commentOne)
-        notes.createComment(2,commentTwo)
+        notes.createComment(2, commentOne)
+        notes.createComment(2, commentTwo)
+        notes.removeComment(2, 2)
+        val result = notes.restoreComment(2, 2)
 
-        notes.removeComment(2,2)
-        notes.restoreComment(2, 2)
-
-        val actual = notes.comments.size
-
-        assertEquals(2, actual)
+        assertTrue(result)
     }
 }
